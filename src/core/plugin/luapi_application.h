@@ -706,9 +706,9 @@ static void refsHelper(lua_State* L, std::vector<const Element*> elements) {
     lua_newtable(L);
     size_t count = 0;
     for (const Element* element: elements) {
-        lua_pushinteger(L, strict_cast<lua_Integer>(++count));  // index
+        lua_pushinteger(L, strict_cast<lua_Integer>(++count));                           // index
         lua_pushlightuserdata(L, const_cast<void*>(static_cast<const void*>(element)));  // value
-        lua_settable(L, -3);                                    // insert
+        lua_settable(L, -3);                                                             // insert
     }
 }
 
@@ -2697,8 +2697,7 @@ static int applib_openFile(lua_State* L) {
         forceOpen = lua_toboolean(L, 3);
     }
 
-    control->openFile(
-            fs::path(filename), [](bool) {}, scrollToPage - 1, forceOpen);
+    control->openFile(fs::path(filename), [](bool) {}, scrollToPage - 1, forceOpen);
     lua_pushboolean(L, true);  // Todo replace with callback
     return 1;
 }
@@ -3124,6 +3123,17 @@ static int applib_addToSelection(lua_State* L) {
     return 0;
 }
 
+
+static int applib_saveAndQuit(lua_State* L) {
+    Plugin* plugin = Plugin::getPluginFromLua(L);
+    Control* control = plugin->getControl();
+    control->save([control](bool success) {
+        if (success)
+            control->quit();
+    });
+    return 0;
+}
+
 /*
  * The full Lua Plugin API.
  * See above for example usage of each function.
@@ -3172,6 +3182,7 @@ static const luaL_Reg applib[] = {{"msgbox", applib_msgbox},  // Todo(gtk4) remo
                                   {"getImages", applib_getImages},
                                   {"getTexts", applib_getTexts},
                                   {"openFile", applib_openFile},
+                                  {"saveAndQuit", applib_saveAndQuit},
                                   // Placeholder
                                   //	{"MSG_BT_OK", nullptr},
 
