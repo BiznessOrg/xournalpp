@@ -10,6 +10,7 @@ cp -r\
   resources \
   ui\
   cmake-build-release/xournalpp\
+  plugins\
   xouranlpp/bin/
 
 echo DONE!
