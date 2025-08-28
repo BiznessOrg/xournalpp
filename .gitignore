@@ -1,4 +1,4 @@
-xournalpp
+xournalpp/
 
 # Autotools (needed for poppler)
 .deps
